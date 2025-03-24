@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaIntel - AI Wastewater Recycling System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #10b981;
+            --secondary-dark: #059669;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f9fafb;
+            --dark-bg: #1f2937;
+            --light-card: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-light: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #f0f9ff, #e0f2fe);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        header {
+            background-color: var(--light-card);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-actions button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .header-actions button:hover {
+            color: var(--primary-color);
+        }
+
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            background-color: #e5e7eb;
+            border-radius: 50%;
+        }
+
+        main {
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+        }
+
+        .tabs {
+            margin-bottom: 2rem;
+        }
+
+        .tab-list {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--light-card);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 1rem;
+            height: 1rem;
+            color: var(--primary-color);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 0.5rem;
+            background-color: #e5e7eb;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 0.25rem;
+        }
+
+        .stat-footer {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-message {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .treatment-stage {
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stage-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .stage-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+        }
+
+        .stage-info h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .stage-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 1.5rem;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 1.25rem;
+            width: 1.25rem;
+            left: 0.125rem;
+            bottom: 0.125rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(1.5rem);
+        }
+
+        .slider-container {
+            margin-bottom: 1rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .slider-value {
+            font-size: 0.875rem;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 0.5rem;
+            border-radius: 0.25rem;
+            background: #e5e7eb;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+        }
+
+        .button-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .button-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .button-outline:hover {
+            background-color: #f9fafb;
+        }
+
+        .button-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .button-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .button-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .button-icon {
+            margin-right: 0.5rem;
+        }
+
+        .recommendation-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-title {
+            font-weight: 500;
+        }
+
+        .recommendation-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .recommendation-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+
+        .meta-icon {
+            margin-right: 0.25rem;
+        }
+
+        .recommendation-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-warning {
+            background-color: #fef3c7;
+            border: 1px solid #fbbf24;
+        }
+
+        .alert-icon {
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: #92400e;
+        }
+
+        .alert-content p {
+            font-size: 0.875rem;
+            color: #b45309;
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-2, .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .recommendation-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v6"></path>
+                        <path d="m4.93 10.93 1.41 1.41"></path>
+                        <path d="M2 18h2"></path>
+                        <path d="M20 18h2"></path>
+                        <path d="m19.07 10.93-1.41 1.41"></path>
+                        <path d="M22 22H2"></path>
+                        <path d="M16 6 8 14"></path>
+                        <path d="m8 6 8 8"></path>
+                    </svg>
+                </div>
+                <span class="logo-text">AquaIntel</span>
+            </div>
+            <div class="header-actions">
+                <button>Help</button>
+                <button>Settings</button>
+                <div class="user-avatar"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-title">
+                <h1>AI-Powered Wastewater Recycling System</h1>
+                <p>Monitor, analyze, and optimize wastewater treatment processes with AI assistance</p>
+            </div>
+
+            <div class="tabs">
+                <ul class="tab-list">
+                    <li class="tab-item active" data-tab="dashboard">Dashboard</li>
+                    <li class="tab-item" data-tab="water-quality">Water Quality</li>
+                    <li class="tab-item" data-tab="treatment">Treatment Control</li>
+                    <li class="tab-item" data-tab="ai-recommendations">AI Recommendations</li>
+                </ul>
+
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="grid grid-cols-4">
+                        <div class="card stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Water Processed</span>
+                                <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="water-processed">85%</div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 85%;"></div>
+                            </div>
+                            <div class="stat-footer">Optimal processing rate</div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">System Efficiency</span>
+                                <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="system-efficiency">92%</div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 92%;"></div>
+                            </div>
+                            <div class="stat-footer">Energy usage is optimal</div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">System Alerts</span>
+                                <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="system-alerts">0</div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%; background-color: #10b981;"></div>
+                            </div>
+                            <div class="stat-footer">All systems operational</div>
+                        </div>
+
+                        <div class="card stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">AI Confidence</span>
+                                <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+                                    <path d="M8.5 8.5v.01"></path>
+                                    <path d="M16 15.5v.01"></path>
+                                    <path d="M12 12v.01"></path>
+                                    <path d="M11 17v.01"></path>
+                                    <path d="M7 14v.01"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="ai-confidence">95%</div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 95%;"></div>
+                            </div>
+                            <div class="stat-footer">AI classification accuracy</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2">
+                        <div class="card">
+                            <div class="card-title">Water Quality Trends</div>
+                            <div class="card-subtitle">7-day water quality metrics</div>
+                            <div class="chart-container">
+                                <canvas id="water-quality-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">Recent Activity</div>
+                            <div class="card-subtitle">System events and notifications</div>
+                            <ul class="activity-list">
+                                <li class="activity-item">
+                                    <div class="activity-icon" style="background-color: #e0f2fe; color: #0284c7;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+                                            <path d="M8.5 8.5v.01"></path>
+                                            <path d="M16 15.5v.01"></path>
+                                            <path d="M12 12v.01"></path>
+                                            <path d="M11 17v.01"></path>
+                                            <path d="M7 14v.01"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-message">AI detected high turbidity in input stream, adjusted filtration parameters</div>
+                                        <div class="activity-time">10:42 AM</div>
+                                    </div>
+                                </li>
+                                <li class="activity-item">
+                                    <div class="activity-icon" style="background-color: #dbeafe; color: #2563eb;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                                        </svg>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-message">Scheduled maintenance completed on primary filtration system</div>
+                                        <div class="activity-time">09:15 AM</div>
+                                    </div>
+                                </li>
+                                <li class="activity-item">
+                                    <div class="activity-icon" style="background-color: #dcfce7; color: #16a34a;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-message">Water quality parameters within optimal range</div>
+                                        <div class="activity-time">08:30 AM</div>
+                                    </div>
+                                </li>
+                                <li class="activity-item">
+                                    <div class="activity-icon" style="background-color: #fef3c7; color: #d97706;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-message">System efficiency improved by 3% after AI optimization</div>
+                                        <div class="activity-time">Yesterday</div>
+                                    </div>
+                                </li>
+                                <li class="activity-item">
+                                    <div class="activity-icon" style="background-color: #f3e8ff; color: #9333ea;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+                                            <path d="M8.5 8.5v.01"></path>
+                                            <path d="M16 15.5v.01"></path>
+                                            <path d="M12 12v.01"></path>
+                                            <path d="M11 17v.01"></path>
+                                            <path d="M7 14v.01"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-message">New wastewater classification model deployed</div>
+                                        <div class="activity-time">Yesterday</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Water Quality Tab -->
+                <div id="water-quality" class="tab-content">
+                    <div class="grid grid-cols-2">
+                        <div class="card">
+                            <div class="card-title">Water Quality Analysis</div>
+                            <div class="card-subtitle">Real-time monitoring of water quality parameters</div>
+                            
+                            <div class="tabs">
+                                <ul class="tab-list">
+                                    <li class="tab-item active" data-tab="input-water">Input Water</li>
+                                    <li class="tab-item" data-tab="treated-water">Treated Water</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="chart-container">
+                                <canvas id="water-parameters-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">Quality Score</div>
+                            <div class="card-subtitle" id="quality-score-subtitle">Raw wastewater assessment</div>
+                            
+                            <div style="display: flex; flex-direction: column; align-items: center; padding: 1rem;">
+                                <div style="position: relative; width: 160px; height: 160px; margin-bottom: 1rem;">
+                                    <div style="width: 100%; height: 100%; border-radius: 50%; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                                        <div style="font-size: 2rem; font-weight: bold;" id="quality-score">45%</div>
+                                    </div>
+                                    <svg width="160" height="160" viewBox="0 0 160 160" style="position: absolute; top: 0; left: 0;">
+                                        <circle cx="80" cy="80" r="70" fill="none" stroke="#e5e7eb" stroke-width="12"></circle>
+                                        <circle id="quality-circle" cx="80" cy="80" r="70" fill="none" stroke="#f59e0b" stroke-width="12" stroke-dasharray="439.6" stroke-dashoffset="241.78" transform="rotate(-90 80 80)"></circle>  stroke-dasharray="439.6" stroke-dashoffset="241.78" transform="rotate(-90 80 80)"></circle>
+                                    </svg>
+                                </div>
+                                
+                                <div style="text-align: center; margin-bottom: 1rem;">
+                                    <div style="display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+                                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        <span style="font-weight: 500;">Acceptable Quality</span>
+                                    </div>
+                                </div>
+                                
+                                <button class="button button-outline button-sm" id="toggle-details">Show Details</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="water-details" style="display: none;">
+                        <div class="card-title">Detailed Parameters</div>
+                        <div class="card-subtitle" id="water-details-subtitle">Raw wastewater parameters</div>
+                        
+                        <div class="grid grid-cols-3" id="parameters-grid">
+                            <!-- Parameters will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treatment Control Tab -->
+                <div id="treatment" class="tab-content">
+                    <div class="grid grid-cols-2">
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div class="card-title">Treatment System Control</div>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="auto-mode" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                        <span style="font-size: 0.875rem; font-weight: 500;">AI Auto Mode</span>
+                                    </div>
+                                    <button class="button button-danger button-sm" id="system-toggle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                                            <rect x="6" y="4" width="4" height="16"></rect>
+                                            <rect x="14" y="4" width="4" height="16"></rect>
+                                        </svg>
+                                        Stop System
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-subtitle">Control and monitor wastewater treatment processes</div>
+
+                            <div style="margin-top: 1.5rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.125rem; font-weight: 500;">Treatment Stages</h3>
+                                    <button class="button button-outline button-sm" id="reset-optimal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                            <path d="M3 3v5h5"></path>
+                                        </svg>
+                                        Reset to Optimal
+                                    </button>
+                                </div>
+
+                                <div class="treatment-stage">
+                                    <div class="stage-header">
+                                        <div class="stage-title">
+                                            <div class="stage-icon" style="background-color: #dbeafe; color: #2563eb;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M4 22h16"></path>
+                                                    <path d="M2 8h20"></path>
+                                                    <path d="M12 2v20"></path>
+                                                    <path d="M12 8a4 4 0 0 0-4 4h8a4 4 0 0 0-4-4Z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="stage-info">
+                                                <h4>Primary Filtration</h4>
+                                                <p>Physical separation of solids</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="stage-toggle" data-stage="primaryFiltration" checked disabled>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Filter Efficiency</span>
+                                            <span class="slider-value" id="primary-efficiency-value">85%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="85" class="slider" id="primary-efficiency" disabled>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Flow Rate</span>
+                                            <span class="slider-value" id="primary-flow-value">70%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="70" class="slider" id="primary-flow" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="treatment-stage">
+                                    <div class="stage-header">
+                                        <div class="stage-title">
+                                            <div class="stage-icon" style="background-color: #dcfce7; color: #16a34a;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="stage-info">
+                                                <h4>Biological Treatment</h4>
+                                                <p>Microbial decomposition of organics</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="stage-toggle" data-stage="biologicalTreatment" checked disabled>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Oxygen Level</span>
+                                            <span class="slider-value" id="bio-oxygen-value">65%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="65" class="slider" id="bio-oxygen" disabled>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Bacteria Activity</span>
+                                            <span class="slider-value" id="bio-bacteria-value">80%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="80" class="slider" id="bio-bacteria" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="treatment-stage">
+                                    <div class="stage-header">
+                                        <div class="stage-title">
+                                            <div class="stage-icon" style="background-color: #f3e8ff; color: #9333ea;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M10 2v7.31"></path>
+                                                    <path d="M14 9.3V1.99"></path>
+                                                    <path d="M8.5 2h7"></path>
+                                                    <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                                                    <path d="M5.58 16.5h12.85"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="stage-info">
+                                                <h4>Chemical Treatment</h4>
+                                                <p>Chemical precipitation and neutralization</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="stage-toggle" data-stage="chemicalTreatment" checked disabled>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Chemical Dosage</span>
+                                            <span class="slider-value" id="chem-dosage-value">40%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="40" class="slider" id="chem-dosage" disabled>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Mixing Rate</span>
+                                            <span class="slider-value" id="chem-mixing-value">60%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="60" class="slider" id="chem-mixing" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="treatment-stage">
+                                    <div class="stage-header">
+                                        <div class="stage-title">
+                                            <div class="stage-icon" style="background-color: #fef3c7; color: #d97706;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="4"></circle>
+                                                    <path d="M12 2v2"></path>
+                                                    <path d="M12 20v2"></path>
+                                                    <path d="m4.93 4.93 1.41 1.41"></path>
+                                                    <path d="m17.66 17.66 1.41 1.41"></path>
+                                                    <path d="M2 12h2"></path>
+                                                    <path d="M20 12h2"></path>
+                                                    <path d="m6.34 17.66-1.41 1.41"></path>
+                                                    <path d="m19.07 4.93-1.41 1.41"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="stage-info">
+                                                <h4>UV Disinfection</h4>
+                                                <p>Final pathogen elimination</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="stage-toggle" data-stage="uvDisinfection" checked disabled>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">UV Intensity</span>
+                                            <span class="slider-value" id="uv-intensity-value">75%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="75" class="slider" id="uv-intensity" disabled>
+                                    </div>
+
+                                    <div class="slider-container">
+                                        <div class="slider-header">
+                                            <span class="slider-label">Exposure Time</span>
+                                            <span class="slider-value" id="uv-exposure-value">50%</span>
+                                        </div>
+                                        <input type="range" min="0" max="100" value="50" class="slider" id="uv-exposure" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">System Status</div>
+                            <div class="card-subtitle">Current operational metrics</div>
+
+                            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; color: #f59e0b;">
+                                                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                            </svg>
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Energy Usage</span>
+                                        </div>
+                                        <span style="font-size: 0.875rem; font-weight: 500;" id="energy-status">Optimized</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-value" id="energy-progress" style="width: 65%;"></div>
+                                    </div>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;" id="energy-message">
+                                        AI optimized for efficiency
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; color: #3b82f6;">
+                                                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                            </svg>
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Processing Rate</span>
+                                        </div>
+                                        <span style="font-size: 0.875rem; font-weight: 500;" id="processing-status">Active</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-value" id="processing-progress" style="width: 90%;"></div>
+                                    </div>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;" id="processing-message">
+                                        Processing at optimal rate
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; color: var(--text-secondary);">
+                                                <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+                                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
+                                            </svg>
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Maintenance Status</span>
+                                        </div>
+                                        <span style="font-size: 0.875rem; font-weight: 500; color: #16a34a;">Good</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-value" style="width: 95%;"></div>
+                                    </div>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        Next scheduled maintenance: 14 days
+                                    </p>
+                                </div>
+
+                                <div class="alert alert-warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-icon">
+                                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    <div class="alert-content">
+                                        <h4>Recommendation</h4>
+                                        <p id="recommendation-message">
+                                            AI mode is active. System parameters are being automatically optimized.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Recommendations Tab -->
+                <div id="ai-recommendations" class="tab-content">
+                    <div class="tabs">
+                        <ul class="tab-list">
+                            <li class="tab-item active" data-tab="recommendations">AI Recommendations</li>
+                            <li class="tab-item" data-tab="insights">System Insights</li>
+                        </ul>
+
+                        <div id="recommendations" class="tab-content active">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; margin-top: 1.5rem;">
+                                <h3 style="font-size: 1.125rem; font-weight: 500; display: flex; align-items: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; color: #9333ea;">
+                                        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+                                        <path d="M8.5 8.5v.01"></path>
+                                        <path d="M16 15.5v.01"></path>
+                                        <path d="M12 12v.01"></path>
+                                        <path d="M11 17v.01"></path>
+                                        <path d="M7 14v.01"></path>
+                                    </svg>
+                                    AI-Generated Recommendations
+                                </h3>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="button button-outline button-sm filter-btn active" data-filter="all">All</button>
+                                    <button class="button button-outline button-sm filter-btn" data-filter="efficiency">Efficiency</button>
+                                    <button class="button button-outline button-sm filter-btn" data-filter="maintenance">Maintenance</button>
+                                    <button class="button button-outline button-sm filter-btn" data-filter="pending">Pending</button>
+                                </div>
+                            </div>
+
+                            <div id="recommendations-list">
+                                <!-- Recommendations will be dynamically inserted here -->
+                            </div>
+                        </div>
+
+                        <div id="insights" class="tab-content">
+                            <div style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                                <h3 style="font-size: 1.125rem; font-weight: 500; display: flex; align-items: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; color: #f59e0b;">
+                                        <path d="M12 2v8"></path>
+                                        <path d="m4.93 10.93 1.41 1.41"></path>
+                                        <path d="M2 18h2"></path>
+                                        <path d="M20 18h2"></path>
+                                        <path d="m19.07 10.93-1.41 1.41"></path>
+                                        <path d="M22 22H2"></path>
+                                        <path d="M12 18v-2"></path>
+                                    </svg>
+                                    AI-Generated System Insights
+                                </h3>
+                            </div>
+
+                            <div class="grid grid-cols-2" id="insights-grid">
+                                <!-- Insights will be dynamically inserted here -->
+                            </div>
+
+                            <div class="card" style="margin-top: 1.5rem;">
+                                <div class="card-title">AI Learning Progress</div>
+                                <div class="card-subtitle">System optimization through machine learning</div>
+
+                                <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Water Classification Model</span>
+                                            <span style="font-size: 0.875rem;">92% accuracy</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-value" style="width: 92%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Treatment Optimization</span>
+                                            <span style="font-size: 0.875rem;">87% efficiency</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-value" style="width: 87%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Predictive Maintenance</span>
+                                            <span style="font-size: 0.875rem;">94% accuracy</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-value" style="width: 94%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem; font-weight: 500;">Energy Optimization</span>
+                                            <span style="font-size: 0.875rem;">78% efficiency</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-value" style="width: 78%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 1.5rem; padding: 1rem; background-color: #dbeafe; border: 1px solid #93c5fd; border-radius: 0.5rem;">
+                                    <h4 style="font-size: 0.875rem; font-weight: 500; color: #1e40af; margin-bottom: 0.5rem;">AI System Insights</h4>
+                                    <p style="font-size: 0.875rem; color: #1e3a8a;">
+                                        The AI system has analyzed 3,452 treatment cycles and identified patterns that have led to a 15% reduction in energy usage and a 8% improvement in water quality over the past 30 days.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mock data for water quality parameters
+        const waterQualityData = {
+            input: {
+                ph: 6.2,
+                turbidity: 12.5,
+                dissolvedOxygen: 4.2,
+                temperature: 22.3,
+                conductivity: 850,
+                totalSolids: 420,
+                biologicalOxygen: 35,
+                chemicalOxygen: 120,
+                nitrogenContent: 18.5,
+                phosphorusContent: 3.2
+            },
+            output: {
+                ph: 7.1,
+                turbidity: 1.2,
+                dissolvedOxygen: 7.8,
+                temperature: 21.5,
+                conductivity: 320,
+                totalSolids: 45,
+                biologicalOxygen: 5,
+                chemicalOxygen: 15,
+                nitrogenContent: 2.1,
+                phosphorusContent: 0.4
+            }
+        };
+
+        // Parameter reference ranges for safe water
+        const parameterRanges = {
+            ph: { min: 6.5, max: 8.5, unit: "pH" },
+            turbidity: { min: 0, max: 5, unit: "NTU" },
+            dissolvedOxygen: { min: 6, max: 10, unit: "mg/L" },
+            temperature: { min: 10, max: 25, unit: "°C" },
+            conductivity: { min: 0, max: 500, unit: "μS/cm" },
+            totalSolids: { min: 0, max: 100, unit: "mg/L" },
+            biologicalOxygen: { min: 0, max: 10, unit: "mg/L" },
+            chemicalOxygen: { min: 0, max: 30, unit: "mg/L" },
+            nitrogenContent: { min: 0, max: 5, unit: "mg/L" },
+            phosphorusContent: { min: 0, max: 1, unit: "mg/L" }
+        };
+
+        // Mock data for AI recommendations
+        const mockRecommendations = [
+            {
+                id: 1,
+                title: "Optimize Biological Treatment",
+                description: "Increase oxygen levels by 5% to improve bacterial activity and reduce BOD levels.",
+                impact: "High",
+                category: "efficiency",
+                timeToImplement: "Immediate",
+                status: "pending"
+            },
+            {
+                id: 2,
+                title: "Adjust Chemical Dosage",
+                description: "Reduce coagulant dosage by 8% based on current turbidity levels to save chemicals while maintaining quality.",
+                impact: "Medium",
+                category: "efficiency",
+                timeToImplement: "Immediate",
+                status: "pending"
+            },
+            {
+                id: 3,
+                title: "Schedule Filter Maintenance",
+                description: "Primary filter #2 shows early signs of clogging. Schedule maintenance within 48 hours to prevent efficiency loss.",
+                impact: "High",
+                category: "maintenance",
+                timeToImplement: "48 hours",
+                status: "pending"
+            },
+            {
+                id: 4,
+                title: "Optimize UV Exposure Time",
+                description: "Current water clarity allows for 10% reduction in UV exposure time while maintaining disinfection standards.",
+                impact: "Medium",
+                category: "efficiency",
+                timeToImplement: "Immediate",
+                status: "implemented"
+            },
+            {
+                id: 5,
+                title: "Adjust Flow Rate During Peak Hours",
+                description: "Historical data suggests reducing flow rate by 15% during 2-4 PM to optimize energy usage.",
+                impact: "Medium",
+                category: "optimization",
+                timeToImplement: "Next cycle",
+                status: "pending"
+            }
+        ];
+
+        // Mock insights data
+        const mockInsights = [
+            {
+                title: "Energy Efficiency",
+                value: 82,
+                change: "+4%",
+                description: "System is operating 4% more efficiently than last month"
+            },
+            {
+                title: "Water Quality",
+                value: 95,
+                change: "+2%",
+                description: "Output water quality has improved by 2% since last adjustment"
+            },
+            {
+                title: "Chemical Usage",
+                value: 68,
+                change: "-12%",
+                description: "Chemical consumption reduced by 12% through AI optimization"
+            },
+            {
+                title: "Maintenance Prediction",
+                value: 89,
+                change: "+5%",
+                description: "Predictive maintenance has improved system uptime by 5%"
+            }
+        ];
+
+        // Function to check if parameter is within safe range
+        const isWithinRange = (value, parameter) => {
+            const range = parameterRanges[parameter];
+            return value >= range.min && value <= range.max;
+        };
+
+        // Function to calculate percentage within range (for progress bar)
+        const calculatePercentage = (value, parameter) => {
+            const range = parameterRanges[parameter];
+            const total = range.max - range.min;
+            
+            if (value < range.min) return 0;
+            if (value > range.max) return 100;
+            
+            return ((value - range.min) / total) * 100;
+        };
+
+        // Function to calculate overall quality score
+        const calculateQualityScore = (data) => {
+            let score = 0;
+            let total = 0;
+            
+            Object.entries(data).forEach(([key, value]) => {
+                if (key in parameterRanges) {
+                    total++;
+                    if (isWithinRange(value, key)) {
+                        score++;
+                    }
+                }
+            });
+            
+            return Math.round((score / total) * 100);
+        };
+
+        // Tab switching functionality
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId);
+                
+                // If this is a nested tab within water quality
+                if (tabId === 'input-water' || tabId === 'treated-water') {
+                    document.querySelectorAll('#water-quality .tab-item').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('#water-quality .tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    updateWaterQualityData(tabId === 'input-water' ? 'input' : 'output');
+                } 
+                // If this is a nested tab within AI recommendations
+                else if (tabId === 'recommendations' || tabId === 'insights') {
+                    document.querySelectorAll('#ai-recommendations .tab-item').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('#ai-recommendations .tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                }
+                // Main tabs
+                else {
+                    document.querySelectorAll('.tab-list > .tab-item').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('main > .container > .tabs > .tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    tabContent.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize charts
+        function initializeCharts() {
+            // Water Quality Chart
+            const waterQualityCtx = document.getElementById('water-quality-chart').getContext('2d');
+            const waterQualityChart = new Chart(waterQualityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        {
+                            label: 'Turbidity (NTU)',
+                            data: [14, 12, 10, 9, 7, 6, 5],
+                            borderColor: 'rgba(234, 179, 8, 0.8)',
+                            backgroundColor: 'rgba(234, 179, 8, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Dissolved Oxygen (mg/L)',
+                            data: [4.5, 5.2, 5.8, 6.3, 6.9, 7.4, 7.8],
+                            borderColor: 'rgba(59, 130, 246, 0.8)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'pH',
+                            data: [6.3, 6.5, 6.7, 6.8, 7.0, 7.1, 7.1],
+                            borderColor: 'rgba(16, 185, 129, 0.8)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+
+            // Water Parameters Chart
+            const waterParametersCtx = document.getElementById('water-parameters-chart').getContext('2d');
+            const waterParametersChart = new Chart(waterParametersCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        {
+                            label: 'pH',
+                            data: [6.3, 6.5, 6.7, 6.8, 7.0, 7.1, 7.1],
+                            borderColor: 'rgba(16, 185, 129, 0.8)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Turbidity (NTU)',
+                            data: [14, 12, 10, 9, 7, 6, 5],
+                            borderColor: 'rgba(234, 179, 8, 0.8)',
+                            backgroundColor: 'rgba(234, 179, 8, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Dissolved Oxygen (mg/L)',
+                            data: [4.5, 5.2, 5.8, 6.3, 6.9, 7.4, 7.8],
+                            borderColor: 'rgba(59, 130, 246, 0.8)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+
+            return { waterQualityChart, waterParametersChart };
+        }
+
+        // Initialize dashboard data
+        function initializeDashboard() {
+            // Simulate real-time data updates
+            setInterval(() => {
+                document.getElementById('water-processed').textContent = `${Math.floor(Math.random() * 20) + 80}%`;
+                document.getElementById('system-efficiency').textContent = `${Math.floor(Math.random() * 15) + 80}%`;
+                document.getElementById('system-alerts').textContent = `${Math.floor(Math.random() * 3)}`;
+                document.getElementById('ai-confidence').textContent = `${Math.floor(Math.random() * 10) + 90}%`;
+                
+                // Update progress bars
+                document.querySelectorAll('.progress-value').forEach(progress => {
+                    const parentText = progress.parentElement.previousElementSibling.textContent;
+                    if (parentText) {
+                        const percentage = parseInt(parentText);
+                        if (!isNaN(percentage)) {
+                            progress.style.width = `${percentage}%`;
+                        }
+                    }
+                });
+            }, 5000);
+        }
+
+        // Update water quality data
+        function updateWaterQualityData(type) {
+            const data = waterQualityData[type];
+            const qualityScore = calculateQualityScore(data);
+            
+            // Update quality score
+            document.getElementById('quality-score').textContent = `${qualityScore}%`;
+            document.getElementById('quality-score-subtitle').textContent = type === 'input' ? 'Raw wastewater assessment' : 'Treated water quality';
+            document.getElementById('water-details-subtitle').textContent = type === 'input' ? 'Raw wastewater parameters' : 'Treated water parameters';
+            
+            // Update quality circle
+            const qualityCircle = document.getElementById('quality-circle');
+            const dashoffset = 439.6 - (439.6 * qualityScore) / 100;
+            qualityCircle.setAttribute('stroke-dashoffset', dashoffset);
+            
+            // Update quality color
+            if (qualityScore > 80) {
+                qualityCircle.setAttribute('stroke', '#22c55e');
+                document.querySelector('#quality-score').nextElementSibling.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; color: #22c55e;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span style="font-weight: 500;">Excellent Quality</span>
+                    </div>
+                `;
+            } else if (qualityScore > 50) {
+                qualityCircle.setAttribute('stroke', '#f59e0b');
+                document.querySelector('#quality-score').nextElementSibling.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span style="font-weight: 500;">Acceptable Quality</span>
+                    </div>
+                `;
+            } else {
+                qualityCircle.setAttribute('stroke', '#ef4444');
+                document.querySelector('#quality-score').nextElementSibling.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span style="font-weight: 500;">Poor Quality</span>
+                    </div>
+                `;
+            }
+            
+            // Update parameters grid
+            const parametersGrid = document.getElementById('parameters-grid');
+            parametersGrid.innerHTML = '';
+            
+            Object.entries(data).forEach(([key, value]) => {
+                const paramKey = key;
+                const range = parameterRanges[paramKey];
+                const isWithinSafeRange = isWithinRange(value, key);
+                const progressValue = calculatePercentage(value, key);
+                
+                const parameterHTML = `
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <div style="display: flex; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem; color: ${key === 'ph' ? '#9333ea' : key === 'turbidity' ? '#f59e0b' : key === 'dissolvedOxygen' ? '#3b82f6' : key === 'temperature' ? '#ef4444' : '#10b981'};">
+                                    <path d="${key === 'ph' ? 'M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0M5.58 16.5h12.85' : 'M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z'}"></path>
+                                </svg>
+                                <span style="font-size: 0.875rem; font-weight: 500; text-transform: capitalize;">
+                                    ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}
+                                </span>
+                            </div>
+                            <span style="font-size: 0.875rem; font-weight: 500; ${isWithinSafeRange ? 'color: #16a34a' : 'color: #ef4444'}">
+                                ${value} ${range.unit}
+                            </span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" style="width: ${progressValue}%; background-color: ${isWithinSafeRange ? '#10b981' : '#ef4444'};"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                            <span>${range.min} ${range.unit}</span>
+                            <span>${range.max} ${range.unit}</span>
+                        </div>
+                    </div>
+                `;
+                
+                parametersGrid.innerHTML += parameterHTML;
+            });
+        }
+
+        // Initialize treatment control
+        function initializeTreatmentControl() {
+            const autoModeToggle = document.getElementById('auto-mode');
+            const systemToggle = document.getElementById('system-toggle');
+            const resetOptimalBtn = document.getElementById('reset-optimal');
+            const stageToggles = document.querySelectorAll('.stage-toggle');
+            const sliders = document.querySelectorAll('.slider');
+            
+            let systemRunning = true;
+            
+            // Auto mode toggle
+            autoModeToggle.addEventListener('change', () => {
+                const isAutoMode = autoModeToggle.checked;
+                
+                // Enable/disable sliders and stage toggles
+                stageToggles.forEach(toggle => {
+                    toggle.disabled = isAutoMode;
+                });
+                
+                sliders.forEach(slider => {
+                    slider.disabled = isAutoMode;
+                });
+                
+                // Update energy status
+                document.getElementById('energy-status').textContent = isAutoMode ? 'Optimized' : 'Manual';
+                document.getElementById('energy-progress').style.width = isAutoMode ? '65%' : '85%';
+                document.getElementById('energy-message').textContent = isAutoMode ? 'AI optimized for efficiency' : 'Manual control active';
+                
+                // Update recommendation message
+                document.getElementById('recommendation-message').textContent = isAutoMode 
+                    ? 'AI mode is active. System parameters are being automatically optimized.'
+                    : 'Consider enabling AI mode for optimal efficiency and water quality.';
+            });
+            
+            // System toggle
+            systemToggle.addEventListener('click', () => {
+                systemRunning = !systemRunning;
+                
+                if (systemRunning) {
+                    systemToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                        Stop System
+                    `;
+                    systemToggle.classList.add('button-danger');
+                    systemToggle.classList.remove('button-primary');
+                } else {
+                    systemToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Start System
+                    `;
+                    systemToggle.classList.remove('button-danger');
+                    systemToggle.classList.add('button-primary');
+                }
+                
+                // Update processing status
+                document.getElementById('processing-status').textContent = systemRunning ? 'Active' : 'Paused';
+                document.getElementById('processing-progress').style.width = systemRunning ? '90%' : '0%';
+                document.getElementById('processing-message').textContent = systemRunning ? 'Processing at optimal rate' : 'System paused';
+            });
+            
+            // Reset to optimal
+            resetOptimalBtn.addEventListener('click', () => {
+                document.getElementById('primary-efficiency').value = 85;
+                document.getElementById('primary-efficiency-value').textContent = '85%';
+                document.getElementById('primary-flow').value = 70;
+                document.getElementById('primary-flow-value').textContent = '70%';
+                
+                document.getElementById('bio-oxygen').value = 65;
+                document.getElementById('bio-oxygen-value').textContent = '65%';
+                document.getElementById('bio-bacteria').value = 80;
+                document.getElementById('bio-bacteria-value').textContent = '80%';
+                
+                document.getElementById('chem-dosage').value = 40;
+                document.getElementById('chem-dosage-value').textContent = '40%';
+                document.getElementById('chem-mixing').value = 60;
+                document.getElementById('chem-mixing-value').textContent = '60%';
+                
+                document.getElementById('uv-intensity').value = 75;
+                document.getElementById('uv-intensity-value').textContent = '75%';
+                document.getElementById('uv-exposure').value = 50;
+                document.getElementById('uv-exposure-value').textContent = '50%';
+            });
+            
+            // Update slider values
+            sliders.forEach(slider => {
+                slider.addEventListener('input', () => {
+                    const valueElement = document.getElementById(`${slider.id}-value`);
+                    if (valueElement) {
+                        valueElement.textContent = `${slider.value}%`;
+                    }
+                });
+            });
+        }
+
+        // Initialize AI recommendations
+        function initializeAIRecommendations() {
+            const recommendationsList = document.getElementById('recommendations-list');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const insightsGrid = document.getElementById('insights-grid');
+            
+            let currentFilter = 'all';
+            
+            // Render recommendations
+            function renderRecommendations() {
+                recommendationsList.innerHTML = '';
+                
+                const filteredRecommendations = mockRecommendations.filter(rec => {
+                    if (currentFilter === 'all') return true;
+                    if (currentFilter === 'pending') return rec.status === 'pending';
+                    if (currentFilter === 'implemented') return rec.status === 'implemented';
+                    return rec.category === currentFilter;
+                });
+                
+                if (filteredRecommendations.length === 0) {
+                    recommendationsList.innerHTML = `
+                        <div class="card">
+                            <div style="padding: 1.5rem; text-align: center; color: var(--text-secondary);">
+                                No recommendations match your filter criteria.
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                filteredRecommendations.forEach(recommendation => {
+                    const recHTML = `
+                        <div class="recommendation-card" data-id="${recommendation.id}" ${recommendation.status === 'implemented' ? 'style="border-color: #86efac; background-color: #f0fdf4;"' : ''}>
+                            <div class="recommendation-header">
+                                <div class="recommendation-title">
+                                    ${recommendation.status === 'implemented' ? `
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.25rem; color: #16a34a;">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                        </svg>
+                                    ` : ''}
+                                    ${recommendation.title}
+                                </div>
+                                ${recommendation.status === 'implemented' ? `
+                                    <div class="badge badge-success">Implemented</div>
+                                ` : ''}
+                            </div>
+                            <div class="recommendation-description">
+                                ${recommendation.description}
+                            </div>
+                            <div class="recommendation-meta">
+                                <div class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon" style="color: #f59e0b;">
+                                        <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                    </svg>
+                                    Impact: 
+                                    <span style="margin-left: 0.25rem; ${
+                                        recommendation.impact === 'High' ? 'color: #ef4444;' :
+                                        recommendation.impact === 'Medium' ? 'color: #f59e0b;' :
+                                        'color: #10b981;'
+                                    }">
+                                        ${recommendation.impact}
+                                    </span>
+                                </div>
+                                <div class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon" style="color: #3b82f6;">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    Time: ${recommendation.timeToImplement}
+                                </div>
+                                <div class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon" style="color: #9333ea;">
+                                        <path d="M3 3v18h18"></path>
+                                        <path d="m19 9-5 5-4-4-3 3"></path>
+                                    </svg>
+                                    <span style="text-transform: capitalize;">${recommendation.category}</span>
+                                </div>
+                            </div>
+                            ${recommendation.status === 'pending' ? `
+                                <div class="recommendation-actions">
+                                    <button class="button button-outline button-sm dismiss-btn" data-id="${recommendation.id}">
+                                        Dismiss
+                                    </button>
+                                    <button class="button button-primary button-sm implement-btn" data-id="${recommendation.id}">
+                                        Implement
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    
+                    recommendationsList.innerHTML += recHTML;
+                });
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.implement-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        const index = mockRecommendations.findIndex(rec => rec.id === id);
+                        if (index !== -1) {
+                            mockRecommendations[index].status = 'implemented';
+                            renderRecommendations();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.dismiss-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        const index = mockRecommendations.findIndex(rec => rec.id === id);
+                        if (index !== -1) {
+                            mockRecommendations[index].status = 'dismissed';
+                            renderRecommendations();
+                        }
+                    });
+                });
+            }
+            
+            // Filter recommendations
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.getAttribute('data-filter');
+                    currentFilter = filter;
+                    
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    renderRecommendations();
+                });
+            });
+            
+            // Render insights
+            function renderInsights() {
+                insightsGrid.innerHTML = '';
+                
+                mockInsights.forEach(insight => {
+                    const insightHTML = `
+                        <div class="card">
+                            <div style="padding: 1rem 1.5rem;">
+                                <h3 style="font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem;">${insight.title}</h3>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
+                                    <div style="font-size: 1.5rem; font-weight: bold;">${insight.value}%</div>
+                                    <div style="display: flex; align-items: center; ${insight.change.startsWith('+') ? 'color: #16a34a;' : 'color: #ef4444;'}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                            <polyline points="17 6 23 6 23 12"></polyline>
+                                        </svg>
+                                        <span style="font-weight: 500;">${insight.change}</span>
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: ${insight.value}%;"></div>
+                                </div>
+                                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                    ${insight.description}
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    insightsGrid.innerHTML += insightHTML;
+                });
+            }
+            
+            // Initial render
+            renderRecommendations();
+            renderInsights();
+        }
+
+        // Toggle water quality details
+        document.getElementById('toggle-details').addEventListener('click', () => {
+            const detailsSection = document.getElementById('water-details');
+            const toggleButton = document.getElementById('toggle-details');
+            
+            if (detailsSection.style.display === 'none') {
+                detailsSection.style.display = 'block';
+                toggleButton.textContent = 'Hide Details';
+            } else {
+                detailsSection.style.display = 'none';
+                toggleButton.textContent = 'Show Details';
+            }
+        });
+
+        // Initialize everything when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const charts = initializeCharts();
+            initializeDashboard();
+            updateWaterQualityData('input');
+            initializeTreatmentControl();
+            initializeAIRecommendations();
+            
+            // Simulate real-time data updates for charts
+            setInterval(() => {
+                charts.waterQualityChart.data.datasets.forEach((dataset) => {
+                    dataset.data = dataset.data.map(value => {
+                        // Add small random variations to simulate real-time data
+                        const change = (Math.random() - 0.5) * 0.5;
+                        return Math.max(0, value + change);
+                    });
+                });
+                charts.waterQualityChart.update();
+                
+                charts.waterParametersChart.data.datasets.forEach((dataset) => {
+                    dataset.data = dataset.data.map(value => {
+                        // Add small random variations to simulate real-time data
+                        const change = (Math.random() - 0.5) * 0.5;
+                        return Math.max(0, value + change);
+                    });
+                });
+                charts.waterParametersChart.update();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
